@@ -1,0 +1,19 @@
+1
+00:00:00,100 --> 00:00:05,700
+Our first rare disease is Familial Hypercholesterolemia or FH This
+
+2
+00:00:05,750 --> 00:00:09,762
+genetic disorder leads to extremely high cholesterol levels even in
+
+3
+00:00:09,812 --> 00:00:13,912
+childhood significantly increasing the risk of heart attacks and strokes
+
+4
+00:00:14,863 --> 00:00:18,762
+Early diagnosis and treatment are crucial for managing FH and
+
+5
+00:00:18,825 --> 00:00:20,113
+preventing complications
