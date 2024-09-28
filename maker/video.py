@@ -72,16 +72,15 @@ def create_video_clip(audio_files, image_files, folder_name):
 
         # Concatenate all the image clips for this audio file
         final_clip = concatenate_videoclips(image_clips)
-        if idx != 0:
-            generator = lambda txt: TextClip(txt, font='Georgia-Regular', fontsize=100, color='white')
-            subtitle = f"shorts\\{folder_name}\\subtitle\\{idx}.srt"
-            sub = SubtitlesClip(subtitle, generator)
-            print(sub)
-            final_clip = CompositeVideoClip([final_clip, sub.set_pos(('center','center'))])
 
-        # final_clip.write_videofile(f"{output_temp}\\{idx}.mp4", codec="libx264", audio_codec="aac", fps=24)
-        # video_clip = VideoFileClip(f"{output_temp}\\{idx}.mp4")
-        # video_clips.append(video_clip)
+        generator = lambda txt: TextClip(txt, font='Arial-Black', fontsize=120, color='white', stroke_color='black', stroke_width=6)
+        subtitle = f"shorts\\{folder_name}\\subtitle\\{idx}.srt"
+        sub = SubtitlesClip(subtitle, generator)
+        final_clip = CompositeVideoClip([final_clip, sub.set_position(('center',0.7), relative=True)])
+
+        final_clip.write_videofile(f"{output_temp}\\{idx}.mp4", codec="libx264", audio_codec="aac", fps=24)
+        video_clip = VideoFileClip(f"{output_temp}\\{idx}.mp4")
+        video_clips.append(final_clip)
 
     return video_clips
 
@@ -95,6 +94,6 @@ def create_video_with_audio(image_files, audio_files, folder_name):
     final_clips = concatenate_videoclips(video_clips)
 
     # Write the final video to the output file
-    # final_clips.write_videofile(output_video, codec="libx264", audio_codec="aac", fps=24)
+    final_clips.write_videofile(output_video, codec="libx264", audio_codec="aac", fps=24)
 
     return final_clips  # Return the final concatenated clip

@@ -2,6 +2,36 @@ import requests
 import sys
 import os
 
+def download_file(output_path, link, retry = 1):
+    count = 0
+    while count <= retry:
+        print("retrying")
+        count = count + 1
+        image = requests.get(link)
+        # Check if the request was successful
+
+        if image.status_code == 200:
+            # Save the image to a file
+            with open(output_path, "wb") as file:
+                file.write(image.content)
+            file_size = os.path.getsize(output_path)
+            if file_size > 10000:
+                return output_path
+            else:
+                os.remove(output_path)
+    return 0
+
+def get_img_url():
+    pass
+
+def get_extension(link):
+    image_extensions = ["jpg", "jpeg", "png", "webp"]
+    ext = link.split(".")[-1].split("?")[0]
+    if ext in image_extensions:
+        return ext
+    return None
+
+
 def scrap_image(search_keys, folder_name):
     images = []
     print(search_keys)
@@ -31,29 +61,14 @@ def scrap_image(search_keys, folder_name):
 
         idy = 0
         for item in results:
-            for retry in range(0,2):
-                image = requests.get(item['link'])
-                # Check if the request was successful
-                ext = item['fileFormat'].split("/")[1]
-                if image.status_code == 200 and ext != "":
-                    # Save the image to a file
-                    image_path = f"shorts/{folder_name}/images/{idx}.{idy}.{ext}"
-                    print(image_path)
-                    with open(image_path, "wb") as file:
-                        file.write(image.content)
-                    file_size = os.path.getsize(image_path)
-                    if file_size > 10000:
-                        images.append(image_path)
-                        idy = idy + 1
-                        print(f"File downloaded completely.{file_size}")
-                        break
-                    else:
-                        os.remove(image_path)
-                        print(
-                            f"File not downloaded completely. got {file_size} bytes.")
-                else:
-                    print(
-                        f"File not downloaded completely. got error {image.status_code}")
+            ext = get_extension(item["link"])
+            print(ext)
+            output_path = f"shorts/{folder_name}/images/{idx}.{idy}.{ext}"
+            image_path = download_file(output_path, item['link'], 2)
+            if image_path:
+                images.append(image_path)
+                idy = idy + 1
+                print(f"File downloaded completely")
             if idy > 3:
                 break
 
