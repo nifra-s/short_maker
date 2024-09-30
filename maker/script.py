@@ -28,7 +28,7 @@ Return: script"""
 
     # Create the model
     generation_config = {
-      "temperature": 1,
+      "temperature": 2,
       "top_p": 0.95,
       "top_k": 64,
       "max_output_tokens": 8192,
@@ -51,11 +51,10 @@ Return: script"""
     response = chat_session.send_message(prompt)
 
     script = json.loads(response.text)
-    print(script)
 
     search_keys = save_script(script, folder_name)
 
-    return script, search_keys
+    return script, search_keys, script["title"]
 
 def save_script(script, folder_name):
     search_keys= [script['title']]

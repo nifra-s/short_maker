@@ -78,8 +78,8 @@ def create_video_clip(audio_files, image_files, folder_name):
         sub = SubtitlesClip(subtitle, generator)
         final_clip = CompositeVideoClip([final_clip, sub.set_position(('center',0.7), relative=True)])
 
-        final_clip.write_videofile(f"{output_temp}\\{idx}.mp4", codec="libx264", audio_codec="aac", fps=24)
-        video_clip = VideoFileClip(f"{output_temp}\\{idx}.mp4")
+        # final_clip.write_videofile(f"{output_temp}\\{idx}.mp4", codec="libx264", audio_codec="aac", fps=24)
+        # video_clip = VideoFileClip(f"{output_temp}\\{idx}.mp4")
         video_clips.append(final_clip)
 
     return video_clips
@@ -96,4 +96,4 @@ def create_video_with_audio(image_files, audio_files, folder_name):
     # Write the final video to the output file
     final_clips.write_videofile(output_video, codec="libx264", audio_codec="aac", fps=24)
 
-    return final_clips  # Return the final concatenated clip
+    return output_video  # Return the final concatenated clip

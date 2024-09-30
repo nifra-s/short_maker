@@ -4,6 +4,7 @@ import edge_tts
 import srt
 from edge_tts import VoicesManager
 from vtt_to_srt.vtt_to_srt import ConvertFile
+from tqdm.asyncio import tqdm as tqdm_asyncio
 
 
 def _convert_srt_to_single_word_lines(_input_file):
@@ -69,18 +70,33 @@ async def _gen_clip(folder_name, audio_sequence, voice, text):
     audio_path = f"shorts\\{folder_name}\\vocal\\{str(audio_sequence)}.mp3"
     vtt_path = f"shorts\\{folder_name}\\subtitle\\{str(audio_sequence)}.vtt"
     srt_path = f"shorts\\{folder_name}\\subtitle\\{str(audio_sequence)}.srt"
+    
+    # Initialize communication to get the estimated audio length
+    chunks = communicate.stream()
+    
+    # Estimate number of chunks by getting text length (as a rough measure)
+    total_chunks = len(text) // 5  # Assuming around 5 characters per chunk for estimation
+    
+    # Progress bar setup
     with open(audio_path, "wb") as file:
-        async for chunk in communicate.stream():
+        async for chunk in tqdm_asyncio(chunks, total=total_chunks, desc="Generating Audio", ncols=100, unit="chunk"):
             if chunk["type"] == "audio":
                 file.write(chunk["data"])
             elif chunk["type"] == "WordBoundary":
                 sub_maker.create_sub((chunk["offset"], chunk["duration"]), chunk["text"])
 
+    # Writing the subtitle files
     with open(vtt_path, "w", encoding="utf-8") as file:
         file.write(sub_maker.generate_subs())
+    
+    # Convert VTT to SRT
     convert_file = ConvertFile(vtt_path, "utf-8")
     convert_file.convert()
+
+    # Ensure the SRT file is formatted properly
     _convert_srt_to_single_word_lines(srt_path)
+
+    print("Subtitle Created")
     return audio_path, srt_path
 
 async def gen_vocal(scr, folder_name):

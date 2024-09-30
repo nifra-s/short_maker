@@ -4,7 +4,6 @@ import re
 import  pandas as pd
 import numpy as np
 
-
 def get_prom(topic, facts_no):
     prom = f"""Write a script on {facts_no} {topic} for a short video. No need into in scene. don't include coma in image_prompt and search_key"""
     return prom
